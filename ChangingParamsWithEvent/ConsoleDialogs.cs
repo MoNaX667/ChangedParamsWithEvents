@@ -2,54 +2,34 @@
 {
     using System;
 
-    internal class ConsoleDialogs
+    internal static class ConsoleDialogs
     {
-        public void ShowConfirmDialog(string message,Person targetPerson)
+        /// <summary>
+        /// Show confirm dialog
+        /// </summary>
+        /// <returns>Dialog bool result</returns>
+        public static bool ShowConfirmDialog()
         {
-            Console.WriteLine(message);
+            Console.Write("Change params? (yes/no): ");
 
             if (Console.ReadLine().ToLower() == "yes")
             {
-                if (OnChanging != null)
-                {
-                    OnChanging(this,new ChangingPersonParams(true,targetPerson));
-                }
+                return true;
             }
+
+            return false;
         }
 
-        public event EventHandler<ChangingPersonParams> OnChanging;
-
-        public static void GetChangeParamsDialog(out string newName, out int newAge)
+        /// <summary>
+        /// Show accept message with info of params changed
+        /// </summary>
+        /// <param name="oldValue">old param value</param>
+        /// <param name="newValue">new param value</param>
+        public static void AcceptParams(string oldValue, string newValue)
         {
-            Console.Write("Input new name: ");
-
-            while (true)
-            {
-                newName = Console.ReadLine();
-
-                if (newName != null)
-                {
-                    break;
-                }
-            }
-
-            
-
-            while (true)
-            {
-                Console.Write("Input new age: ");
-
-                if (int.TryParse(Console.ReadLine(),out newAge))
-                {
-                    if (newAge < 0 || newAge > 140)
-                    {
-                        Console.WriteLine("Wrong Age");
-                    }
-                    break;
-                }
-
-            }
-
+            Console.WriteLine("Old value: {0}; New value: {1}",oldValue,newValue);
+            Console.WriteLine("Params will be changed");
         }
+
     }
 }
