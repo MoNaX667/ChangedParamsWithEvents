@@ -7,75 +7,36 @@
     /// </summary>
     internal class Program
     {
-        private static Person someBody;
-
-        static void Main(string[] args)
+        static void Main()
         {
             Console.Title = "Some test with events";
             // Set window params
             Console.WindowHeight = 40;
             Console.WindowWidth = 100;
 
-            someBody = new Person("Jaky",20);
-            ConsoleDialogs dialogShower = new ConsoleDialogs();
+            Person drake=new Person("Drake",29);
 
-
-            // Linking events
-            dialogShower.OnChanging += dialogShower_OnChanging;
-            someBody.OnChanged += someBody_OnChanged;
-
-            // Output start value
-            Console.Write(new string('-', 30));
-            Console.Write("Start version of person");
-            Console.WriteLine(new string('-', 30));
-            Console.WriteLine(someBody.ToString());
-            Console.Write(new string('-', 30));
-            Console.WriteLine();
-
-            // Change person params
-            dialogShower.ShowConfirmDialog(
-                "Are you sure that you wish change params: Yes/No",
-                someBody);
-
-            // Output chanhed value
-            Console.Write(new string('-', 30));
-            Console.Write("Chenged version of person");
-            Console.WriteLine(new string('-', 30));
-            Console.WriteLine(someBody.ToString());
-            Console.Write(new string('-', 30));
-            Console.WriteLine();
-
+            // Start values output
+            Console.WriteLine("Current Param ===> name: {0}; age: {1} ... Press Any key to continue",
+                drake.Name,
+                drake.Age);
             Console.ReadKey();
-        }
 
-        /// <summary>
-        /// Event changing
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private static void dialogShower_OnChanging(object sender, ChangingPersonParams e)
-        {
-            if (e.ChangingFlag)
-            {
-                string tempName="";
-                int tempAge=0;
+            // Name changing
+            Console.WriteLine("We testing change name");
+            drake.Name = "Thomas";
+            Console.WriteLine("After name changing Param ===> name: {0}; age: {1} ... Press Any key to continue", 
+                drake.Name, 
+                drake.Age);
+            Console.ReadKey();
 
-                ConsoleDialogs.GetChangeParamsDialog(out tempName,out tempAge);
-
-                someBody.ChangeParams(tempName,tempAge);
-            }
-        }
-
-        /// <summary>
-        /// Event Changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private static void someBody_OnChanged(object sender, ChangedPersonParams e)
-        {
-            Console.WriteLine(new string('-', 30));
-            Console.WriteLine(e.Message);
-            Console.WriteLine(new string('-', 30));
+            // Age changing
+            Console.WriteLine("We testing change Age");
+            drake.Age = 40;
+            Console.WriteLine("After age changing Param ===> name: {0}; age: {1} ... Press Any key to continue",
+                drake.Name,
+                drake.Age);
+            Console.ReadKey();
         }
     }
 }
