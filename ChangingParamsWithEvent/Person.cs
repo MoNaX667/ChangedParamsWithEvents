@@ -7,14 +7,20 @@
         // Fileds
         private string name;
         private int age;
-        private PersonParamChangingHandler tempChanging;
-        private PersonParamChangedHandler tempChanged ;
+
+        // Ctors
+        public Person(string name, int age)
+        {
+            this.name = name;
+            this.age = age;
+        }
 
         // Delegates
+
         /// <summary>
         /// Wil used with param changing event
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Return dialog result</returns>
         public delegate bool PersonParamChangingHandler();
 
         /// <summary>
@@ -22,23 +28,12 @@
         /// </summary>
         /// <param name="oldName">Old value</param>
         /// <param name="newName">New value</param>
-        public delegate void PersonParamChangedHandler(string oldName,string newName);
+        public delegate void PersonParamChangedHandler(string oldName, string newName);
 
         // Events
         public event PersonParamChangingHandler ParamChanging;
+
         public event PersonParamChangedHandler ParamChanged;
-
-        // Ctors
-        public Person(string name,int age)
-        {
-            // Create new link from event to delegate with func
-            this.tempChanging = new PersonParamChangingHandler(ConsoleDialogs.ShowConfirmDialog);
-            this.tempChanged = new PersonParamChangedHandler(ConsoleDialogs.AcceptParams);
-            this.ParamChanging += tempChanging;
-
-            this.name = name;
-            this.age = age;
-        }
 
         // Props
         public string Name
@@ -47,11 +42,12 @@
             {
                 return this.name;
             }
+
             set
             {
                 if (this.ParamChanging())
                 {
-                    tempChanged(this.name, value);
+                    this.ParamChanged(this.name, value);
                     this.name = value;
                 }
             }
@@ -66,9 +62,14 @@
 
             set
             {
+                if (value < 1 || value >= 100)
+                {
+                    throw new BadAgeException();
+                }
+
                 if (this.ParamChanging())
                 {
-                    tempChanged(this.age.ToString(), value.ToString());
+                    this.ParamChanged(this.age.ToString(), value.ToString());
                     this.age = value;
                 }
             }
