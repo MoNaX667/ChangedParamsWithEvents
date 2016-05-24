@@ -29,6 +29,8 @@
         {
             Console.WriteLine("Old value: {0}; New value: {1}",oldValue,newValue);
             Console.WriteLine("Params will be changed");
+            Console.WriteLine(new string('-',30));
+            Console.ReadKey();
         }
 
     }
