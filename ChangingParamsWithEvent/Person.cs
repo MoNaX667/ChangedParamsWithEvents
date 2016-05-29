@@ -15,10 +15,11 @@
             this.age = age;
         }
 
-
         // Events
         public event EventHandler<ParamChanging> OnParamChanging;
+
         public event EventHandler<Error> OnError; 
+
         public event EventHandler<ParamChanged> OnParamChanged;
 
         // Props
@@ -33,7 +34,7 @@
             {
                 if (this.OnParamChanging != null)
                 {
-                    this.OnParamChanging(this,new ParamChanging(this.Name,value));
+                    this.OnParamChanging(this, new ParamChanging(this.Name, value));
                 }
 
                 if (!string.IsNullOrEmpty(value))
@@ -43,7 +44,7 @@
 
                 if (this.OnParamChanged != null)
                 {
-                    this.OnParamChanged(this, new ParamChanged(this.Name,this.Age));
+                    this.OnParamChanged(this, new ParamChanged(this.Name, this.Age));
                 }
             }
         }
@@ -61,7 +62,7 @@
                 {
                     if (this.OnError != null)
                     {
-                        this.OnError(this,new Error());
+                        this.OnError(this, new Error());
                         return;
                     }
 
@@ -70,13 +71,13 @@
 
                 if (this.OnParamChanging != null)
                 {
-                    this.OnParamChanging(this,new ParamChanging(this.Age,value));
+                    this.OnParamChanging(this, new ParamChanging(this.Age, value));
 
                     this.age = value;
 
-                    if(this.OnParamChanged != null)
+                    if (this.OnParamChanged != null)
                     {
-                        this.OnParamChanged(this, new ParamChanged(this.Name,this.Age));
+                        this.OnParamChanged(this, new ParamChanged(this.Name, this.Age));
                     }
                 }
             }
