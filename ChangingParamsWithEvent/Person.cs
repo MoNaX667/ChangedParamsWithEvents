@@ -15,25 +15,11 @@
             this.age = age;
         }
 
-        // Delegates
-
-        /// <summary>
-        /// Wil used with param changing event
-        /// </summary>
-        /// <returns>Return dialog result</returns>
-        public delegate bool PersonParamChangingHandler();
-
-        /// <summary>
-        /// Will used with param changed event
-        /// </summary>
-        /// <param name="oldName">Old value</param>
-        /// <param name="newName">New value</param>
-        public delegate void PersonParamChangedHandler(string oldName, string newName);
 
         // Events
-        public event PersonParamChangingHandler ParamChanging;
-
-        public event PersonParamChangedHandler ParamChanged;
+        public event EventHandler<ParamChanging> OnParamChanging;
+        public event EventHandler<Error> OnError; 
+        public event EventHandler<ParamChanged> OnParamChanged;
 
         // Props
         public string Name
@@ -45,10 +31,19 @@
 
             set
             {
-                if (this.ParamChanging())
+                if (this.OnParamChanging != null)
                 {
-                    this.ParamChanged(this.name, value);
+                    this.OnParamChanging(this,new ParamChanging(this.Name,value));
+                }
+
+                if (!string.IsNullOrEmpty(value))
+                {
                     this.name = value;
+                }
+
+                if (this.OnParamChanged != null)
+                {
+                    this.OnParamChanged(this, new ParamChanged(this.Name,this.Age));
                 }
             }
         }
@@ -64,13 +59,25 @@
             {
                 if (value < 1 || value >= 100)
                 {
+                    if (this.OnError != null)
+                    {
+                        this.OnError(this,new Error());
+                        return;
+                    }
+
                     throw new BadAgeException();
                 }
 
-                if (this.ParamChanging())
+                if (this.OnParamChanging != null)
                 {
-                    this.ParamChanged(this.age.ToString(), value.ToString());
+                    this.OnParamChanging(this,new ParamChanging(this.Age,value));
+
                     this.age = value;
+
+                    if(this.OnParamChanged != null)
+                    {
+                        this.OnParamChanged(this, new ParamChanged(this.Name,this.Age));
+                    }
                 }
             }
         }
