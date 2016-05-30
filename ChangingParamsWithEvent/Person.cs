@@ -1,41 +1,64 @@
-﻿namespace ChangingParamsWithEvent
+﻿// <copyright file="Person.cs" company="Some Company">
+// Copyright (c)  All rights reserved.
+// <author>Vitaliy Belyakov</author>
+// </copyright>
+
+namespace ChangingParamsWithEvent
 {
     using System;
 
+    /// <summary>
+    /// Some person class
+    /// </summary>
     internal class Person
     {
         // Fileds
+
+        /// <summary>
+        ///     Name of person
+        /// </summary>
         private string name;
+
+        /// <summary>
+        ///     Age of person
+        /// </summary>
         private int age;
 
         // Ctors
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Person" /> class the base person with name and age values
+        /// </summary>
+        /// <param name="name">Name of person</param>
+        /// <param name="age">Age of person</param>
         public Person(string name, int age)
         {
             this.name = name;
             this.age = age;
         }
 
-        // Delegates
-
-        /// <summary>
-        /// Wil used with param changing event
-        /// </summary>
-        /// <returns>Return dialog result</returns>
-        public delegate bool PersonParamChangingHandler();
-
-        /// <summary>
-        /// Will used with param changed event
-        /// </summary>
-        /// <param name="oldName">Old value</param>
-        /// <param name="newName">New value</param>
-        public delegate void PersonParamChangedHandler(string oldName, string newName);
-
         // Events
-        public event PersonParamChangingHandler ParamChanging;
 
-        public event PersonParamChangedHandler ParamChanged;
+        /// <summary>
+        /// Changing property event
+        /// </summary>
+        public event EventHandler<ParamChangingArgs> OnParamChanging;
+
+        /// <summary>
+        /// Error event
+        /// </summary>
+        public event EventHandler<ErrorArgs> OnError; 
+
+        /// <summary>
+        /// Changed property event
+        /// </summary>
+        public event EventHandler<ParamChangedArgs> OnParamChanged;
 
         // Props
+
+        /// <summary>
+        /// Gets or sets Name of person property
+        /// </summary>
         public string Name
         {
             get
@@ -45,14 +68,29 @@
 
             set
             {
-                if (this.ParamChanging())
+                if (this.OnParamChanging != null)
                 {
-                    this.ParamChanged(this.name, value);
-                    this.name = value;
+                    this.OnParamChanging(this, new ParamChangingArgs(this.Name, value));
+                }
+
+                // Return from prop if value is empty
+                if (string.IsNullOrEmpty(value))
+                {
+                    return;
+                }
+
+                this.name = value;
+
+                if (this.OnParamChanged != null)
+                {
+                    this.OnParamChanged(this, new ParamChangedArgs(this.Name, this.Age));
                 }
             }
         }
 
+        /// <summary>
+        /// Gets or sets age of person value
+        /// </summary>
         public int Age
         {
             get
@@ -62,15 +100,28 @@
 
             set
             {
+                // If new age format is bad than throw new ageExcep or do event
                 if (value < 1 || value >= 100)
                 {
+                    if (this.OnError != null)
+                    {
+                        this.OnError(this, new ErrorArgs());
+                        return;
+                    }
+
                     throw new BadAgeException();
                 }
 
-                if (this.ParamChanging())
+                if (this.OnParamChanging != null)
                 {
-                    this.ParamChanged(this.age.ToString(), value.ToString());
-                    this.age = value;
+                    this.OnParamChanging(this, new ParamChangingArgs(this.Age, value));
+                }
+
+                this.age = value;
+
+                if (this.OnParamChanged != null)
+                {
+                    this.OnParamChanged(this, new ParamChangedArgs(this.Name, this.Age));
                 }
             }
         }
